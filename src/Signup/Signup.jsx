@@ -1,30 +1,78 @@
 import React, { useState } from "react";
+import { auth, firestore } from "../firebase";
 import "./signup.css";
 
 function Signup() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const userCrediential = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = userCrediential.user;
+
+      await firestore.collection("users").doc(user.uid).set({
+        firstName,
+        lastName,
+        email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      await firestore;
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div className="Signup">
       <div className="facebook">facebook</div>
-      <div className="signup-container">
+      <div className="signup-container" onSubmit={handleSignUp}>
         <div className="heading">
           <h2 className="heading1">Create a new account</h2>
           <p>It's quick and easy.</p>
         </div>
         <hr className="line"></hr>
         <div className="input-details">
-          <input className="firstname" type="name" placeholder="First Name" />
-          <input className="surname" type="name" placeholder="Surname" />
+          <input
+            className="firstname"
+            type="name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="First Name"
+          />
+          <input
+            className="surname"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            type="name"
+            placeholder="Surname"
+            required
+          />
         </div>
         <div className="inputcontact">
           <input
             className="email"
             type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             placeholder="Mobile number or email address"
+            required
           />
           <input
             className="Password"
             type="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="New password"
+            required
           />
         </div>
         <br></br>
@@ -100,8 +148,7 @@ function Signup() {
           </select>
         </div>
         <div className="gender">
-         <select type="radio">
-         </select>
+          <select type="radio"></select>
           <option className="female"></option>
           <option clssaName="Male"></option>
           <option clssaName="Custom"></option>
@@ -122,6 +169,7 @@ function Signup() {
         <button className="signup" type="submit">
           Sign up
         </button>
+        {error && <p>{error}</p>}
         <h6>
           <a href="/">Already have an account?</a>
         </h6>

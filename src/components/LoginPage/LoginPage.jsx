@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState } from 'react';
 import "./login.css";
-import PasswordInput from "../../Password/Password";
+import {auth} from '../../firebase';
 
 function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSignIn = async (e) => {
+      e.preventDefault();
+      try{
+        await auth.signWithEmailAndPassword(email, password);
+      }
+      catch (error){
+          setError(error.message)
+      }
   return (
-    <>
+<>
       <div className="Login">
         <div className="facebook">
           <div className="facebook-title">facebook</div>
@@ -13,13 +25,22 @@ function LoginPage() {
             your life.
           </div>
         </div>
-        <div className="login-container">
+        <div className="login-container" value={handleSignIn}>
           <input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address or phone number"
+            required
           ></input>
           <br></br>
-          <PasswordInput />
+           <input
+            type="email"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+          ></input>
           <br></br>
           <button className="login">Log in</button>
           <div className="forgetten">
@@ -27,7 +48,10 @@ function LoginPage() {
           </div>
           <div className="line"></div>
           <br></br>
+          <div>
           <button className="create">Create A New Account</button>
+          {error && <p>{error}</p>}
+          </div>
           <br></br>
           <br></br>
           <div className="page">
@@ -38,7 +62,8 @@ function LoginPage() {
           </div>
         </div>
       </div>
-    </>
+	  </>
   );
+}
 }
 export default LoginPage;

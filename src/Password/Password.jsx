@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import '../styles/password.css'
 
+
 function PasswordInput({password, setPassword})
 {
     const [showPassword, SetShowPassword] = useState(false);
@@ -19,6 +20,7 @@ function PasswordInput({password, setPassword})
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <span className="password-toogle-icon" onClick={tooglePasswordVisible}>
